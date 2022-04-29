@@ -1,0 +1,22 @@
+{
+  "name": "the-project-library",
+  "version": "1.0.0",
+  "description": "A library of all development projects in the island of Mindanao",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/themindanaoproject/the-project-library.git"
+  },
+  "author": "Kenjie Terrado",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/themindanaoproject/the-project-library/issues"
+  },
+  "homepage": "https://github.com/themindanaoproject/the-project-library#readme",
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
