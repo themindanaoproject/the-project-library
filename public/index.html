@@ -2,6 +2,7 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>The Mindanao Project</title>
     <link rel="stylesheet" href="/widget/lib.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;400;500;700;800&family=Rubik:wght@300;400;700&display=swap" rel="stylesheet">
@@ -16,27 +17,52 @@
       </div>
     </section>
     <app id="main" xscope="main">
-      <header class="wrapper-outer flex ac">
-        <div class="wrapper-inner">
-          asdasds
-        </div>
-      </header>
-      <div class="layout-outer flex ac" style="background:url(/assets/background-desktop.jpg)">
-        <div class="layout-inner">
-          <div class="site-title-wrapper">
-            <div class="site-home-title pop"> The Mindanao Project.</div>
-            <div class="site-home-description rub">A library of all development projects in the island of Mindanao.</div>
+      <!--<header xcomponent="Modules.header"></header>-->
+      <main class="page-main">
+        <section class="hero-banner-outer">
+          <div class="hero-banner-inner">
+            <div class="w100">
+              <div class="site-title">tmp.</div>
+              <div class="site-home-title">
+                The Mindanao Project.
+              </div>
+              <div class="search-description">Search for any city, provinces, or region</div>
+              <fieldset class="search-bar-wrapper">
+                <input id="keyword" type="text" name="" autofocus value="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill:#2828286e;"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A7.952 7.952 0 0 0 18 10c0-4.411-3.589-8-8-8s-8 3.589-8 8 3.589 8 8 8zm0-14c3.309 0 6 2.691 6 6s-2.691 6-6 6-6-2.691-6-6 2.691-6 6-6z"></path></svg>
+              </fieldset>
+            </div>
           </div>
-          <input id="keyword" type="text" name="" value="">
-        </div>
-      </div>
+        </section>
+        <section class="results-pane-outer">
+          <div class="results-pane">
+            <div id="results" class="card"></div>
+          </div>
+        </section>
+        <section class="nav-bar-pane-outer">
+          <div class="nav-bar-pane-inner">
+            <ul class="site-nav-item-list">
+              <li class="site-nav-item"><a href="">API</a></li>
+              <li class="site-nav-item"><a href="">About Us</a></li>
+              <li class="site-nav-item"><a href="">The Library</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="card-pane-outer">
+
+        </section>
+      </main>
+      <!--<footer xcomponent="Modules.footer"></footer>-->
     </app>
+
     <script type="text/javascript">
-      app.scope('main',function($scope,SearchSvc){
+      app.scope('main',['Modules'],function($scope,SearchSvc){
+
         $scope.SearchSvc = SearchSvc;
         $.get('/data/paths.json',function(response){
           $scope.SearchSvc.items = response;
         })
+
         document.addEventListener('keyup',$scope.SearchSvc.suggest);
       })
     </script>

@@ -6,7 +6,14 @@ strawberry.create('app',function(){
   },1500)
 })
 
-app.service('SearchSvc',function($scope){
+app.factory('Modules',function(){
+  return {
+    header:'/modules/header.htm',
+    footer:'/modules/footer.htm',
+  }
+});
+
+app.service('SearchSvc',function($scope,$patch){
   return {
     keyword: null,
     items: {},
@@ -15,14 +22,45 @@ app.service('SearchSvc',function($scope){
       $scope.SearchSvc.search(keyword);
     },
     search:function(keyword){
-      let results = [];
+      if (keyword.trim()==='') {
+        $('#results').html('');
+        return;
+      }
+      let results = '';
       for (var key in $scope.SearchSvc.items) {
         let skey = key.toLowerCase();
-        if (skey.includes(keyword)) {
-          results.push(key);
+        let skeyword = keyword.toLowerCase();
+        if (skey.includes(skeyword)) {
+          let pathArr = $scope.SearchSvc.items[key].split('/');
+          let provincePath = 'null';
+          let towncityPath = 'null';
+          if (undefined!==pathArr[3]&&''!==pathArr[3].trim()) {
+            provincePath = pathArr[3];
+          }
+          if (undefined!==pathArr[4]&&''!==pathArr[4].trim()) {
+            towncityPath = pathArr[4];
+          }
+          results = results+'<div class="result-item"><a href="/card.html?region='+pathArr[2]+'&province='+provincePath+'&ct='+towncityPath+'&keyword='+key+'">'+key+'</a></div>';
         }
       }
-      console.log(results);
+      $('#results').html(results);
+    },
+    end:function(){
+      $scope.$patchables['@Results'] = '';
+      $patch('Results');
     }
+  }
+})
+
+app.factory('CardModel',function(){
+  return {
+    images:{},
+    logo:{},
+    metrics:{},
+    name:'',
+    namespace:'',
+    path:'',
+    traceback:{},
+    meta:{}
   }
 })
