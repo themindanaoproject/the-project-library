@@ -31,7 +31,67 @@
           <div class="page-body page-wrapper-outer">
             <div class="page-wrapper-inner">
               <div class="card">
-                {{CardModel.name}}
+                <div class="card-outer">
+                  <div class="card-inner">
+                    <div class="card-tags-wrapper card-padding"></div>
+                    <div class="card-header card-padding">
+                      <div class="card-subtitle">{{Utils.text.capFirst(CardModel.meta.type)}}</div>
+                      <div class="card-name">{{CardModel.name}}</div>
+                    </div>
+                    <div xif="CardModel.traceback.province!==null">
+                      <div class="card-spacer"></div>
+                      <a href="/card.html?region={{CardModel.traceback.region}}&province={{CardModel.traceback.province}}">
+                        <div class="card-padding">
+                          <div class="card-subtitle">Province</div>
+                          <div class="card-item">{{Utils.text.normalize(CardModel.traceback.province)}}</div>
+                        </div>
+                      </a>
+                    </div>
+                    <div xif="CardModel.traceback.region!==null">
+                      <div class="card-spacer"></div>
+                      <a href="/card.html?region={{CardModel.traceback.region}}">
+                        <div class="card-padding">
+                          <div class="card-subtitle">Region</div>
+                          <div class="card-item">{{Utils.text.normalize(CardModel.traceback.region)}}</div>
+                        </div>
+                      </a>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+              <div xif="CardModel.meta.type=='province'">
+                <div class="sublocation-entry">
+                  <div xclick="showSub('cities')" class="sublocation-entry-header">
+                    <div class="sublocation-entry-title">Cities</div>
+                    <div xpatch="@CitiesCollapsible">
+                      <div xif="states.collapsible.cities==true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m18.707 12.707-1.414-1.414L13 15.586V6h-2v9.586l-4.293-4.293-1.414 1.414L12 19.414z"></path></svg>
+                      </div>
+                      <div xif="states.collapsible.cities==false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M11 8.414V18h2V8.414l4.293 4.293 1.414-1.414L12 4.586l-6.707 6.707 1.414 1.414z"></path></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="show-sub-cities" style="display:none;">
+                    <div class="card subloc-listing">
+                      <div xrepeat="CardModel.sublocations.cities as city">
+                        <a class="subloc-link" href="">
+                          <div class="sublocation-item-wrapper">
+                            <div class="sublocation-item">{{city.name}}</div>
+                          </div>
+                          <div class="card-spacer">
+
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div xif="CardModel.meta.type=='region'">
+                Region
               </div>
             </div>
           </div>
@@ -51,9 +111,10 @@
       </main>
     </app>
     <script type="text/javascript">
-      app.scope('card',['Modules'],function($scope,$patch,CardModel){
+      app.scope('card',['Modules'],function($scope,$patch,CardModel,Utils){
 
         $scope.CardModel = CardModel;
+        $scope.Utils = Utils;
 
         let Params = new URLSearchParams(window.location.search);
         let CardPathBuilder = {
@@ -77,7 +138,8 @@
           }
         }
 
-        let cardPath = '/data/Mindanao/'+CardPathBuilder.region()+CardPathBuilder.province()+CardPathBuilder.ct()+'card.json';
+        let dirPath = '/data/Mindanao/'+CardPathBuilder.region()+CardPathBuilder.province()+CardPathBuilder.ct();
+        let cardPath = dirPath+'card.json';
 
         $scope.searchedKeyword = '';
         if (null!==Params.get('keyword')) {
@@ -91,11 +153,32 @@
           url:cardPath,
           contentType:'application/json',
           success:function(response){
-            console.log(response);
             $scope.pageStatus = true;
             $scope.CardModel.name = response.name;
+            $scope.CardModel.namespace = response.namespace;
             $scope.CardModel.images = response.images;
+            $scope.CardModel.meta = response._card;
+            $scope.CardModel.traceback = response.traceback;
             $patch('PageStatus');
+            if (response._card.type==='province') {
+              $.ajax({
+                type:'GET',
+                url: dirPath+'/cities.json',
+                contentType:'application/json',
+                success:function(response){
+                  for (var key in response) {
+                    $scope.CardModel.sublocations.cities.push({
+                      name:key,
+                      path:response[key]
+                    });
+                  }
+                  $patch('PageStatus');
+                },
+                error:function(){
+
+                }
+              });
+            }
           },
           error:function(error){
             console.log('not found');
@@ -103,6 +186,20 @@
             $patch('PageStatus');
           }
         });
+
+        $scope.states = {
+          collapsible:{
+            cities:true
+          }
+        }
+
+        $scope.showSub=function(type){
+          if (type==='cities') {
+            $('.show-sub-cities').fadeToggle();
+            $scope.states.collapsible.cities=!$scope.states.collapsible.cities;
+            $patch('CitiesCollapsible');
+          }
+        }
 
       });
     </script>

@@ -13,6 +13,19 @@ app.factory('Modules',function(){
   }
 });
 
+app.service('Utils',function($scope){
+  return {
+    text:{
+      capFirst:function(str){
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      },
+      normalize:function(str){
+        return str.replace('_',' ');
+      }
+    }
+  }
+});
+
 app.service('SearchSvc',function($scope,$patch){
   return {
     keyword: null,
@@ -60,7 +73,12 @@ app.factory('CardModel',function(){
     name:'',
     namespace:'',
     path:'',
-    traceback:{},
-    meta:{}
+    traceback:{region:'unknown',province:'unknown'},
+    meta:{type:'unknown'},
+    sublocations:{
+      provinces:[],
+      towns:[],
+      cities:[]
+    }
   }
 })
