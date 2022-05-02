@@ -347,7 +347,7 @@ foreach ($data as $key => $region) {
                ]
              ],
              '_card' => [
-               'type' => 'city',
+               'type' => 'town',
                'createdAt' => TimeStamp::now(),
                'updatedAt' => TimeStamp::now(),
                'updatedBy' => '@themindanaoproject'

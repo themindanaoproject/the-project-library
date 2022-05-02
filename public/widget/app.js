@@ -21,6 +21,17 @@ app.service('Utils',function($scope){
       },
       normalize:function(str){
         return str.replace('_',' ');
+      },
+      pathToUrl:function(path){
+        let pathArr = path.split('/');
+        let url = 'region='+pathArr[2];
+        if (undefined!==pathArr[3]&&''!==pathArr[3].trim()) {
+          url += '&province='+pathArr[3];
+        }
+        if (undefined!==pathArr[4]&&''!==pathArr[4].trim()) {
+          url += '&ct='+pathArr[4];
+        }
+        return url;
       }
     }
   }

@@ -77,13 +77,36 @@
                   <div class="show-sub-cities" style="display:none;">
                     <div class="card subloc-listing">
                       <div xrepeat="CardModel.sublocations.cities as city">
-                        <a class="subloc-link" href="">
+                        <a class="subloc-link" href="/card.html?{{$parent.Utils.text.pathToUrl(city.path)}}">
                           <div class="sublocation-item-wrapper">
                             <div class="sublocation-item">{{city.name}}</div>
                           </div>
-                          <div class="card-spacer">
-
+                          <div class="card-spacer"></div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sublocation-entry">
+                  <div xclick="showSub('towns')" class="sublocation-entry-header">
+                    <div class="sublocation-entry-title">Towns / Municipalities</div>
+                    <div xpatch="@TownsCollapsible">
+                      <div xif="states.collapsible.towns==true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m18.707 12.707-1.414-1.414L13 15.586V6h-2v9.586l-4.293-4.293-1.414 1.414L12 19.414z"></path></svg>
+                      </div>
+                      <div xif="states.collapsible.towns==false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M11 8.414V18h2V8.414l4.293 4.293 1.414-1.414L12 4.586l-6.707 6.707 1.414 1.414z"></path></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="show-sub-towns" style="display:none;">
+                    <div class="card subloc-listing">
+                      <div xrepeat="CardModel.sublocations.towns as town">
+                        <a class="subloc-link" href="/card.html?{{$parent.Utils.text.pathToUrl(town.path)}}">
+                          <div class="sublocation-item-wrapper">
+                            <div class="sublocation-item">{{town.name}}</div>
                           </div>
+                          <div class="card-spacer"></div>
                         </a>
                       </div>
                     </div>
@@ -91,7 +114,51 @@
                 </div>
               </div>
               <div xif="CardModel.meta.type=='region'">
-                Region
+                <div class="sublocation-entry">
+                  <div xclick="showSub('provinces')" class="sublocation-entry-header">
+                    <div class="sublocation-entry-title">Provinces</div>
+                    <div xpatch="@ProvincesCollapsible">
+                      <div xif="states.collapsible.provinces==true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="m18.707 12.707-1.414-1.414L13 15.586V6h-2v9.586l-4.293-4.293-1.414 1.414L12 19.414z"></path></svg>
+                      </div>
+                      <div xif="states.collapsible.provinces==false">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;"><path d="M11 8.414V18h2V8.414l4.293 4.293 1.414-1.414L12 4.586l-6.707 6.707 1.414 1.414z"></path></svg>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="show-sub-provinces" style="display:none;">
+                    <div class="card subloc-listing">
+                      <div xrepeat="CardModel.sublocations.provinces as province">
+                        <a class="subloc-link" href="/card.html?{{$parent.Utils.text.pathToUrl(province.path)}}">
+                          <div class="sublocation-item-wrapper">
+                            <div class="sublocation-item">{{province.name}}</div>
+                          </div>
+                          <div class="card-spacer"></div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="page-section-card-inner">
+                <div class="page-section-entry-header">
+                  <div class="flex ac w100 space-bet">
+                    <div class="sublocation-entry-title">Projects</div>
+                    <div class="add-project-button-wrapper">
+                      <button class="add-project-button button is-transparent" type="button" name="button">Add Project (+)</button>
+                    </div>
+                  </div>
+                  <div xpatch="@ProjectListingView">
+                    <div xif="states.projects.isEmpty==true">
+                      <div class="empty-project-message-wrapper">
+                        There are no development projects listed yet in {{CardModel.name}}.
+                      </div>
+                    </div>
+                    <div xif="states.projects.isEmpty==false">
+
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -178,6 +245,43 @@
 
                 }
               });
+              $.ajax({
+                type:'GET',
+                url: dirPath+'/towns.json',
+                contentType:'application/json',
+                success:function(response){
+                  for (var key in response) {
+                    $scope.CardModel.sublocations.towns.push({
+                      name:key,
+                      path:response[key]
+                    });
+                  }
+                  $patch('PageStatus');
+                },
+                error:function(){
+
+                }
+              });
+            }
+
+            if (response._card.type==='region') {
+              $.ajax({
+                type:'GET',
+                url: dirPath+'/provinces.json',
+                contentType:'application/json',
+                success:function(response){
+                  for (var key in response) {
+                    $scope.CardModel.sublocations.provinces.push({
+                      name:key,
+                      path:response[key]
+                    });
+                  }
+                  $patch('PageStatus');
+                },
+                error:function(){
+
+                }
+              });
             }
           },
           error:function(error){
@@ -189,7 +293,12 @@
 
         $scope.states = {
           collapsible:{
-            cities:true
+            cities:true,
+            towns:true,
+            provinces:true
+          },
+          projects:{
+            isEmpty:true
           }
         }
 
@@ -198,6 +307,16 @@
             $('.show-sub-cities').fadeToggle();
             $scope.states.collapsible.cities=!$scope.states.collapsible.cities;
             $patch('CitiesCollapsible');
+          }
+          if (type==='towns') {
+            $('.show-sub-towns').fadeToggle();
+            $scope.states.collapsible.towns=!$scope.states.collapsible.towns;
+            $patch('TownsCollapsible');
+          }
+          if (type==='provinces') {
+            $('.show-sub-provinces').fadeToggle();
+            $scope.states.collapsible.provinces=!$scope.states.collapsible.provinces;
+            $patch('ProvincesCollapsible');
           }
         }
 
