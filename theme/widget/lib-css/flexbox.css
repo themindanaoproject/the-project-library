@@ -1,0 +1,17 @@
+.evc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fx {
+    display: flex;
+}
+
+.ac {
+    align-items: center;
+}
+
+.jc {
+    justify-content: center;
+}

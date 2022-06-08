@@ -1,0 +1,24 @@
+.pop {
+    font-family: 'Poppins';
+}
+
+.int {
+    font-family: 'Inter';
+}
+
+.text-lg {
+    font-size: 1.5em;
+}
+
+.text-rg {
+    font-size: 1.3em;
+}
+
+.text-md {
+    font-size: 0.95em;
+    line-height: 1.7em;
+}
+
+.text-sm {
+    font-size: 0.8em;
+}
