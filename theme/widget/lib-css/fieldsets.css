@@ -1,0 +1,6 @@
+fieldset {
+    overflow: hidden;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #999999;
+}

@@ -6,6 +6,10 @@
     font-family: 'Inter';
 }
 
+.text-xl {
+    font-size: 1.7em;
+}
+
 .text-lg {
     font-size: 1.5em;
 }
